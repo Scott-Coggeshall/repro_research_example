@@ -1,6 +1,5 @@
 ---
 title: "NOSE Pre-Clinical Swab Data"
-author: "Scott Coggeshall"
 date: "8/16/2020"
 output: html_document
 ---
@@ -35,6 +34,9 @@ cleaned_data %>% ggplot(aes(x = plate_number, y = count)) + geom_jitter(size = 2
 
 ```
 
+
+Assuming that the plates are numbered by the order in which they were run, the first twenty runs appear fairly homogeneous in terms of the spread of colony counts. After twenty plates, between-plate variation in colony counts starts to increase.
+
 # Swab Comparison
 
 To compare the swabs, we fit the following model to the nasal swab data
@@ -54,3 +56,5 @@ plot(stan_model, regex_pars = "swab_type", prob_outer = .95, transformations = "
 ```
 
 The figure shows estimated posterior medians as well as 50% credible intervals (darker, shorter line) and 95% credible intervals (lighter, longer line) for the swab type coefficients from the model. This model estimates multiplicative changes, so that a coefficient value of 1 for a swab type indicates that the expected number of colony counts for that swab is equal to the expected number of colony counts for the Copan Floq swab, while a coefficient value of 0.5 would indicate that the expected number of colony counts for that swab is equal to half of the expected number of colony counts from the Copan Floq swab.
+
+There's no definitive evidence that any of the other swabs outperforms the Copan Floq swab in terms of collecting more colonies. The Origin swab performs closest to the Copan Floq swab, and may potentially perform the better. The other swabs consistently collect around half of the number of colonies that the Copan Floq swab collects on average.
