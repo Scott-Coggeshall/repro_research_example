@@ -30,6 +30,8 @@ clean_data <- function(uncleaned_data){
   
   uncleaned_data$numeric <- ifelse(!is.na(uncleaned_data$numeric), uncleaned_data$numeric, 0) +
                              ifelse(!is.na(uncleaned_data$character), uncleaned_data$character, 0)
+  
+  uncleaned_data$censored <- uncleaned_data$numeric == 100
   # remove "Plate " prefix but set plate_number as factor
   uncleaned_data$plate_number <- trimws(gsub("Plate ", "", uncleaned_data$plate_number))
   uncleaned_data$plate_number <- factor(uncleaned_data$plate_number, levels = as.character(1:40))
