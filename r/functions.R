@@ -22,6 +22,11 @@ clean_data <- function(uncleaned_data){
   uncleaned_data$plate_number <- trimws(gsub("Plate ", "", uncleaned_data$plate_number))
   uncleaned_data$plate_number <- factor(uncleaned_data$plate_number, levels = as.character(1:40))
   
+  # add plate_grouping so we can do small multiples plot
+  
+  uncleaned_data$plate_group <- uncleaned_data$plate_number
+  levels(uncleaned_data$plate_group) <- rep(1:4, each = 10)
+    
   # set swab_type as factor and re-level so that Copan Floq is 
   # reference level
   
