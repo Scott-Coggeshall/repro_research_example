@@ -28,9 +28,8 @@ clean_data <- function(uncleaned_data){
   # merge character column values into numeric column when numeric is NA
   # and add flag for censored 
   
-  uncleaned_data$numeric <- (!is.na(uncleaned_data$numeric))*uncleaned_data$numeric +
-                             (!is.na(uncleaned_data$character))*uncleaned_data$character
-  uncleaned_data$censored <- ifelse(uncleaned_data$numeric == 100, 1, 0)
+  uncleaned_data$numeric <- ifelse(!is.na(uncleaned_data$numeric), uncleaned_data$numeric, 0) +
+                             ifelse(!is.na(uncleaned_data$character), uncleaned_data$character, 0)
   # remove "Plate " prefix but set plate_number as factor
   uncleaned_data$plate_number <- trimws(gsub("Plate ", "", uncleaned_data$plate_number))
   uncleaned_data$plate_number <- factor(uncleaned_data$plate_number, levels = as.character(1:40))
