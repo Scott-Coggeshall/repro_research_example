@@ -18,6 +18,18 @@ clean_data <- function(uncleaned_data){
   # add unique id for each swab 
   uncleaned_data$id <- rep(1:(nrow(uncleaned_data)/2), each = 2)
   
+  
+  # strip asterisk and greater than sign from values then convert to numeric
+  
+  uncleaned_data$character <- as.numeric(gsub(pattern = "\\*|\\*>", replacement = "0",
+                                   uncleaned_data$character))
+  
+  
+  # merge character column values into numeric column when numeric is NA
+  
+  uncleaned_data$numeric <- (!is.na(uncleaned_data$numeric))*uncleaned_data$numeric +
+                             (!is.na(uncleaned_data$character))*uncleaned_data$character
+  
   # remove "Plate " prefix but set plate_number as factor
   uncleaned_data$plate_number <- trimws(gsub("Plate ", "", uncleaned_data$plate_number))
   uncleaned_data$plate_number <- factor(uncleaned_data$plate_number, levels = as.character(1:40))
