@@ -9,10 +9,16 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 loadd(cleaned_data)
 loadd(stan_model)
+
+cleaned_data <- cleaned_data %>% filter(count < 100)
+
 ```
+
+
 
 # Colony Counts by Swab Type
 This figure shows the colony counts recorded from each of the plates for each of the swab types. The smaller, somewhat transparent dots are the actual count values. The larger, filled dots show the median colony count number for the corresponding swab type.
+
 ```{r}
 
 cleaned_data %>% mutate(swab_type = fct_reorder(swab_type, count, na.rm = T))  %>% ggplot(aes(x = swab_type, y = count, color = swab_type)) + 
