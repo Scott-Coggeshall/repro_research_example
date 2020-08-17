@@ -16,20 +16,20 @@ tidy_excel <- function(file_path){
 clean_data <- function(uncleaned_data){
   
   # add unique id for each swab 
-  dat$id <- rep(1:(nrow(dat)/2), each = 2)
+  uncleaned_data$id <- rep(1:(nrow(uncleaned_data)/2), each = 2)
   
   # remove "Plate " prefix but set plate_number as factor
-  dat$plate_number <- factor(gsub("Plate ", "", dat$plate_number))
+  uncleaned_data$plate_number <- factor(gsub("Plate ", "", uncleaned_data$plate_number))
   
   # set swab_type as factor and re-level so that Copan Floq is 
   # reference level
   
-  dat$swab_type <- factor(dat$swab_type)
-  dat$swab_type <- relevel(dat$swab_type, "Copan Floq")
+  uncleaned_data$swab_type <- factor(uncleaned_data$swab_type)
+  uncleaned_data$swab_type <- relevel(uncleaned_data$swab_type, "Copan Floq")
   
-  dat <- dat %>% rename(count = numeric)
+  uncleaned_data <- uncleaned_data %>% rename(count = numeric)
   
-  dat
+  uncleaned_data
   
   
 }
