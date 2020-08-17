@@ -1,0 +1,36 @@
+---
+title: "NOSE Pre-Clinical Swab Data"
+author: "Scott Coggeshall"
+date: "8/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+loadd(cleaned_data)
+```
+
+# Colony Counts by Swab Type
+
+```{r}
+
+cleaned_data %>% mutate(swab_type = fct_reorder(swab_type, count, na.rm = T))  %>% ggplot(aes(x = swab_type, y = count, color = swab_type)) + 
+  geom_jitter(size = 2, alpha = .15, width = .2) + coord_flip() + stat_summary(fun = median, geom = "point", size = 3.5) + theme_light() + scale_color_d3()
+
+
+
+```
+
+# Colony Counts by Plate
+
+
+
+```{r}
+
+cleaned_data %>% ggplot(aes(x = plate_number, y = count)) + geom_jitter(size = 2, alpha = .15, width = .2) + geom_boxplot(outlier.alpha = 0) + theme_light() 
+
+
+```
+
+
