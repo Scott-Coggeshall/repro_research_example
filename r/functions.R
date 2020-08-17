@@ -26,7 +26,11 @@ clean_data <- function(uncleaned_data){
   
   uncleaned_data$plate_group <- uncleaned_data$plate_number
   levels(uncleaned_data$plate_group) <- rep(1:4, each = 10)
-    
+  
+  # add copan floq flag for setting color
+  
+  uncleaned_data$ref_flag <- factor(ifelse(uncleaned_data$swab_type == "Copan Floq", 1, 0))
+  
   # set swab_type as factor and re-level so that Copan Floq is 
   # reference level
   
