@@ -6,7 +6,7 @@ tidy_excel <- function(file_path){
   
 
   dat <- data_tbl %>% behead("up-left", "swab_number") %>% behead("up", "plate_number") %>% 
-    behead("left", "swab_type") %>% select(swab_type, swab_number, plate_number, numeric)
+    behead("left", "swab_type") %>% select(swab_type, swab_number, plate_number, numeric, character)
   
   dat
   
