@@ -19,7 +19,8 @@ clean_data <- function(uncleaned_data){
   uncleaned_data$id <- rep(1:(nrow(uncleaned_data)/2), each = 2)
   
   # remove "Plate " prefix but set plate_number as factor
-  uncleaned_data$plate_number <- factor(gsub("Plate ", "", uncleaned_data$plate_number))
+  uncleaned_data$plate_number <- gsub("Plate ", "", uncleaned_data$plate_number)
+  uncleaned_data$plate_number <- factor(as.character(uncleaned_data$plate_number))
   
   # set swab_type as factor and re-level so that Copan Floq is 
   # reference level
