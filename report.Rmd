@@ -6,13 +6,14 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 loadd(cleaned_data)
+loadd(stan_model)
 ```
 
 # Colony Counts by Swab Type
-
+This figure shows the colony counts recorded from each of the plates for each of the swab types. The smaller, somewhat transparent dots are the actual count values. The larger, filled dots show the median colony count number for the corresponding swab type.
 ```{r}
 
 cleaned_data %>% mutate(swab_type = fct_reorder(swab_type, count, na.rm = T))  %>% ggplot(aes(x = swab_type, y = count, color = swab_type)) + 
@@ -22,15 +23,34 @@ cleaned_data %>% mutate(swab_type = fct_reorder(swab_type, count, na.rm = T))  %
 
 ```
 
+
 # Colony Counts by Plate
 
 
 
 ```{r}
 
-cleaned_data %>% ggplot(aes(x = plate_number, y = count)) + geom_jitter(size = 2, alpha = .15, width = .2) + geom_boxplot(outlier.alpha = 0) + theme_light() 
+cleaned_data %>% ggplot(aes(x = plate_number, y = count)) + geom_jitter(size = 2, alpha = .5, width = .2)  + theme_light() + facet_wrap( ~ plate_group, scales = "free_x")
 
 
 ```
 
+# Swab Comparison
 
+To compare the swabs, we fit the following model to the nasal swab data
+
+$$
+\begin{align*}
+log(E[Count]) &\sim Swab \: Type + Sample + Plate
+\end{align*}
+$$
+where Swab Type is entered as a fixed effect categorical predictor with Swab Type = Copan Floq as the reference level and Sample and Plate as crossed random effects. In effect, we are modeling the colony count as a function of swab type while accounting for the fact that we expect some counts to be more similar to others either because they are from the same sample or because they were done on the same plate. 
+
+
+```{r}
+
+plot(stan_model, regex_pars = "swab_type", prob_outer = .95, transformations = "exp") + geom_vline(xintercept = 1)
+
+```
+
+The figure shows estimated posterior medians as well as 50% credible intervals (darker, shorter line) and 95% credible intervals (lighter, longer line) for the swab type coefficients from the model. This model estimates multiplicative changes, so that a coefficient value of 1 for a swab type indicates that the expected number of colony counts for that swab is equal to the expected number of colony counts for the Copan Floq swab, while a coefficient value of 0.5 would indicate that the expected number of colony counts for that swab is equal to half of the expected number of colony counts from the Copan Floq swab.
