@@ -27,6 +27,8 @@ clean_data <- function(uncleaned_data){
   dat$swab_type <- factor(dat$swab_type)
   dat$swab_type <- relevel(dat$swab_type, "Copan Floq")
   
+  dat <- dat %>% rename(count = numeric)
+  
   dat
   
   
