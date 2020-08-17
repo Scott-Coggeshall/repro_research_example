@@ -29,7 +29,7 @@ cleaned_data %>% mutate(swab_type = fct_reorder(swab_type, count, na.rm = T))  %
 
 ```{r}
 
-cleaned_data %>% ggplot(aes(x = plate_number, y = count, color = ref_flag)) + geom_jitter(size = 2, alpha = .5, width = .2)  + theme_light() + facet_wrap( ~ plate_group, scales = "free_x") + scale_color_d3()
+cleaned_data %>% ggplot(aes(x = plate_number, y = count, color = ref_flag)) + geom_jitter(size = 2, alpha = .5, width = .2)  + theme_light() + facet_wrap( ~ plate_group, scales = "free_x") + scale_color_d3(labels = c("Other", "Copan Floq"))
 
 
 ```
@@ -51,7 +51,7 @@ where Swab Type is entered as a fixed effect categorical predictor with Swab Typ
 
 ```{r}
 
-plot(stan_model, regex_pars = "swab_type", prob_outer = .95, transformations = "exp") + geom_vline(xintercept = 1)
+plot(stan_model, regex_pars = "swab_type", prob_outer = .95, transformations = "exp") + geom_vline(xintercept = 1) + scale_y_discrete(labels = levels(cleaned_data$swab_type)[-1])
 
 ```
 
