@@ -7,6 +7,8 @@ plan <- drake_plan(
   
   stan_model = rstanarm::stan_glmer(count ~ swab_type + (1 | id) + (1 | plate_number), family = 'poisson', data = cleaned_data),
   
+  model_samples = rstan::extract(stan_model$stanfit),
+  
   report = rmarkdown::render(knitr_in("report.Rmd"), output_file = file_out("reports/report.html"), quiet = T)
   
   
