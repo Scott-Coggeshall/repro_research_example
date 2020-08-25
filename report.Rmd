@@ -22,45 +22,43 @@ This figure shows the colony counts recorded from each of the plates for each of
 ```{r}
 
 cleaned_data %>% mutate(swab_type = fct_reorder(swab_type, count, na.rm = T))  %>% ggplot(aes(x = swab_type, y = count, color = swab_type)) + 
-  geom_jitter(size = 2, alpha = .15, width = .2) + coord_flip() + stat_summary(fun = median, geom = "point", size = 3.5) + theme_light() + scale_color_d3()
+  geom_jitter(size = 2, alpha = .2, width = .2) + coord_flip() + stat_summary(fun = median, geom = "point", size = 3.5) + theme_light() + scale_color_d3()
 
 
 
 ```
 
-
-# Colony Counts by Plate
-
-
-
-```{r}
-
-cleaned_data %>% ggplot(aes(x = plate_number, y = count, color = ref_flag)) + geom_jitter(size = 2, alpha = .5, width = .2)  + theme_light() + facet_wrap( ~ plate_group, scales = "free_x") + scale_color_d3(labels = c("Other", "Copan Floq"))
-
-
-```
-
-
-Assuming that the plates are numbered by the order in which they were run, the first twenty runs appear fairly homogeneous in terms of the spread of colony counts. After twenty plates, between-plate variation in colony counts starts to increase.
 
 # Swab Comparison
 
-To compare the swabs, we fit the following model to the nasal swab data
+## Random Effects Model
+To compare the swabs, we fit a Poisson random effects model to the nasal swab data. Expected colony count was modeled as
 
 $$
 \begin{align*}
-log(E[Count]) &\sim Swab \: Type + Sample + Plate
+log(E[Count]) &= Swab \: Type + Sample
 \end{align*}
 $$
-where Swab Type is entered as a fixed effect categorical predictor with Swab Type = Copan Floq as the reference level and Sample and Plate as crossed random effects. In effect, we are modeling the colony count as a function of swab type while accounting for the fact that we expect some counts to be more similar to others either because they are from the same sample or because they were done on the same plate. 
+where Swab Type is entered as a fixed effect categorical predictor with Swab Type = Copan Floq as the reference level and Sample as a random effect. In effect, we are modeling the expected colony count as a function of swab type while accounting for the fact that we expect some counts to be more similar to others either because they are from the same sample.
 
 
 ```{r}
 
-plot(stan_model, regex_pars = "swab_type", prob_outer = .95, transformations = "exp") + geom_vline(xintercept = 1) + scale_y_discrete(labels = levels(cleaned_data$swab_type)[-1])
+plot(stan_model, regex_pars = "swab_type", prob = .95, prob_outer = .95, transformations = "exp") + geom_vline(xintercept = 1) + scale_y_discrete(labels = levels(cleaned_data$swab_type)[-1])
 
 ```
 
-The figure shows estimated posterior medians as well as 50% credible intervals (darker, shorter line) and 95% credible intervals (lighter, longer line) for the swab type coefficients from the model. This model estimates multiplicative changes, so that a coefficient value of 1 for a swab type indicates that the expected number of colony counts for that swab is equal to the expected number of colony counts for the Copan Floq swab, while a coefficient value of 0.5 would indicate that the expected number of colony counts for that swab is equal to half of the expected number of colony counts from the Copan Floq swab.
+The figure shows estimated coefficient values as well as 95% credible intervals (CIs) for the performance of the swabs relative to the Copan Floq swab. This model estimates multiplicative changes, so that a coefficient value of 1 for a swab type indicates that the expected number of colony counts for that swab is equal to the expected number of colony counts for the Copan Floq swab, while a coefficient value of 0.5 would indicate that the expected number of colony counts for that swab is equal to half of the expected number of colony counts from the Copan Floq swab.
 
-There's no definitive evidence that any of the other swabs outperforms the Copan Floq swab in terms of collecting more colonies. The Origin swab performs closest to the Copan Floq swab, and may potentially perform the better. The other swabs consistently collect around half of the number of colonies that the Copan Floq swab collects on average.
+From the figure, we can see that there is no definitive evidence that any of the other swabs outperforms the Copan Floq swab in terms of collecting more colonies. The Origin swab performs closest to the Copan Floq swab, and may potentially perform better. The other swabs are estimated to collect around half of the number of colonies that the Copan Floq swab collects on average. Exact values for the estimated multiplicative change relative to the Copan Floq swab and the upper and lower ends of the 95% CIs are shown in the following table:
+
+```{r}
+
+swab_coef_summary <- summary(stan_model, regex_pars = "swab_type", probs = c(.5, .025, .975))[, c("50%", "2.5%", "97.5%")]
+
+rownames(swab_coef_summary) <- levels(cleaned_data$swab_type)[-1]
+colnames(swab_coef_summary) <- c( "Multiplicative Change", "95% CI Lower", "95% CI Upper")
+knitr::kable(round(exp(swab_coef_summary), digits = 2))
+
+```
+

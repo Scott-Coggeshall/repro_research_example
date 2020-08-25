@@ -5,7 +5,7 @@ plan <- drake_plan(
   
   cleaned_data = clean_data(uncleaned_data),
   
-  stan_model = rstanarm::stan_glmer(count ~ swab_type + (1 | id) + (1 | plate_number), family = 'poisson', data = cleaned_data %>% filter(censored == FALSE)),
+  stan_model = rstanarm::stan_glmer(count ~ swab_type + (1 | id) , family = 'poisson', data = cleaned_data %>% filter(censored == FALSE)),
   
   stan_model_noplate = rstanarm::stan_glmer(count ~ swab_type + (1 | id), family = "poisson", data = cleaned_data %>% filter(censored == FALSE)),
   
