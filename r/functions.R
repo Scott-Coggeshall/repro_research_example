@@ -35,7 +35,7 @@ clean_data <- function(uncleaned_data){
   # remove "Plate " prefix but set plate_number as factor
   uncleaned_data$plate_number <- trimws(gsub("Plate ", "", uncleaned_data$plate_number))
   uncleaned_data$plate_number <- factor(uncleaned_data$plate_number, levels = as.character(1:40))
-  
+  uncleaned_data$plate_first20 <- ifelse(uncleaned_data$plate_number %in% paste(1:20), 1, 0)
   # add plate_grouping so we can do small multiples plot
   
   uncleaned_data$plate_group <- uncleaned_data$plate_number
