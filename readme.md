@@ -1,6 +1,14 @@
 # Example of Reproducible Research Practices
 
-This repo contains the code for an analysis of bacteria colony counts collected by several types of nasal swab. 
+This repo contains the code for an analysis of bacteria colony counts collected by several types of nasal swab. The code implements several best practices for reproducible research and pipeline-style data analysis. These include 
+
+- a self-contained directory structure with local file paths
+- version control with `git`
+- a project-specific `R` package library with dependency tracking through `renv`
+- an Rmarkdown-based dynamic document for reporting analysis results
+- a `make`-style analysis pipeline through `drake`
+
+In the following, we go a bit further into each of these features.
 
 
 ## Directory Structure
