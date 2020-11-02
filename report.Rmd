@@ -28,13 +28,6 @@ cleaned_data %>% mutate(swab_type = fct_reorder(swab_type, count, na.rm = T))  %
 
 ```
 
-# Colony Counts by Plate Number
-```{r}
-
-cleaned_data %>% ggplot(aes(x = as.numeric(plate_number), y = count, color = swab_type)) + geom_jitter(size = 2, alpha = .5, width = .2)  + theme_light() + facet_wrap( ~ swab_type) + geom_vline(xintercept = 20)
-
-
-```
 
 # Swab Comparison
 
@@ -68,4 +61,18 @@ colnames(swab_coef_summary) <- c( "Multiplicative Change", "95% CI Lower", "95% 
 knitr::kable(round(exp(swab_coef_summary), digits = 2))
 
 ```
+
+
+# Potential for Plate Order Effects
+
+
+The following figure shows the colony counts for each swab type plotted in a sequential order according to plate number. The solid line in each panel separates the first 20 plates from the last 20 plates.
+```{r}
+
+cleaned_data %>% ggplot(aes(x = as.numeric(plate_number), y = count, color = swab_type)) + geom_jitter(size = 2, alpha = .5, width = .2)  + theme_light() + facet_wrap( ~ swab_type) + geom_vline(xintercept = 20) + scale_color_d3() + xlab(label = "Plate Number")
+
+
+```
+
+
 
